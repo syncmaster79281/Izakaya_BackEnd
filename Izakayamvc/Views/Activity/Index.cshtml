@@ -1,0 +1,136 @@
+﻿@using Izakayamvc.ViewModels.Vms
+@model IEnumerable<Izakayamvc.ViewModels.Vms.ActivityVm>
+
+@{
+    ViewBag.Title = "活動一覽";
+}
+
+<h2 style="text-align:center">活動列表</h2>
+
+<div class="d-flex align-items-center mb-2">
+    <form method="get" class="ms-2 mb-2" style="margin-bottom: 10px; margin-right: 10px;">
+        @Html.TextBox("name", null, new { @class = "form-control-inline" })
+        <input type="submit" value="查詢" class="btn btn-outline-primary btn-sm" />
+    </form>
+    <div class="ms-auto">
+        @Html.Partial(PartialViews.GoToCreatePage)
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.BranchId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Discount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsUsed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Levels)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BranchId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsUsed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Levels)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @*<div class="row">*@
+                <div mb-2>
+                    <a href="@Url.Action("Edit", "Activity", new { Id = item.Id})" class="btn btn-sm btn-outline-primary">
+                        <i class="fa-solid fa-pencil"></i>
+                        編輯
+                    </a>
+
+                    <a href="@Url.Action("Delete", "Activity", new { Id = item.Id})" class="btn-delete btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-delete-left"></i>
+                        刪除
+                    </a>
+                </div>
+                @*</div>*@
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btn-delete').on('click', function (e) {
+                e.preventDefault(); // 阻止默认行为，即链接跳转
+
+                const url = $(this).attr('href'); // 获取链接地址
+                const confirmMessage = $(this).data('confirm_message');
+
+                Swal.fire({
+                    title: '是否刪除',
+                    text: '這筆資料',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '取消',
+                    confirmButtonText: '刪除',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+}
+

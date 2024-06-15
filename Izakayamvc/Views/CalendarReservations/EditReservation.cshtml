@@ -1,0 +1,116 @@
+﻿@using Izakayamvc.ViewModels.Vms
+@model Izakayamvc.ViewModels.Vms.ReservationVM
+
+@{
+    ViewBag.Title = "EditReservation";
+    string returnUrl = ViewBag.ReturnUrl as string ?? "/";
+}
+
+<h2 style="text-align:center">編輯當日訂位表</h2>
+
+@section CSS{
+    <style>
+
+        h2 {
+            max-width: 500px;
+        }
+
+        input {
+            max-width: 500px;
+        }
+        .inputwidth {
+            max-width: 500px;
+        }
+    </style>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("ReturnUrl", returnUrl)
+
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.ReservationTime, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.TextBoxFor(model => model.ReservationTime, new { @class = "form-control form-control-sm", type = "datetime-local", Value = Model.ReservationTime.ToString("yyyy-MM-ddTHH:mm") })
+            @Html.ValidationMessageFor(model => model.ReservationTime, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.Qty, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.EditorFor(model => model.Qty, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            @Html.ValidationMessageFor(model => model.Qty, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.Tel, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.EditorFor(model => model.Tel, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            @Html.ValidationMessageFor(model => model.Tel, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+        </div>
+        
+        @{
+            var Branchdata = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "台北", Value = "1" },
+                new SelectListItem { Text = "台中", Value = "2" },
+            };
+        }
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "form-label col-md-2", })
+            @Html.DropDownListFor(model => model.BranchId, Branchdata, new { @class = "form-control form-control-sm inputwidth" })
+            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+        </div>
+
+        @*@{
+            var seats = new List<SelectListItem>();
+            foreach (var item in ViewBag.Seats)
+            {
+                seats.Add(new SelectListItem { Text = item.Name, Value = item.Id.ToString() });
+            }
+        }
+        <div class="mb-2">
+            @Html.LabelFor(model => model.SeatId, htmlAttributes: new { @class = "form-label col-md-2", })
+            @Html.DropDownListFor(model => model.SeatId, seats, new { @class = "form-control form-control-sm inputwidth" })
+            @Html.ValidationMessageFor(model => model.SeatId, "", new { @class = "text-danger" })
+        </div>*@
+        
+
+        <div class="mb-2">
+            @Html.LabelFor(model => model.SeatId, htmlAttributes: new { @class = "form-label col-md-2" })
+            @Html.EditorFor(model => model.SeatId, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            @Html.ValidationMessageFor(model => model.SeatId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.Partial(PartialViews.SaveNewButton)
+
+            <a href="@ViewBag.ReturnUrl" class="btn btn-sm btn-outline-success">
+                <i class="fa-solid fa-list"></i>
+                返回清單
+            </a>
+        </div>
+    </div>
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

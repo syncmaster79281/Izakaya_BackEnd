@@ -1,0 +1,270 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.SeatCartVm>
+@{
+    ViewBag.Title = "FoodService";
+}
+
+
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <h2 class="text-center">餐點管理後台</h2>
+    </div>
+    <div class="row">
+        <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-around">
+                <li class="breadcrumb-item" onclick="updateAllStatus(2,3)">點餐</li>
+                <li class="breadcrumb-item" onclick="updateAllStatus(3,4)">製作</li>
+                <li class="breadcrumb-item" onclick="updateAllStatus(4,6)">送餐</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-4 p-0 border rounded custom-border" id="confirmOrders">
+            @foreach (var item in Model)
+            {
+                if (item.CartStatus.Trim() == "已確認")
+                {
+                    <div class="card mb-3 w-100" data-ordertime="@item.OrderTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                        <div class="card-body">
+                            <div class="accordion accordion-flush" id="accordion@(item.Id)">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#card@(item.Id)">
+                                            <div class="button-content">
+                                                <i class="ri-restaurant-2-line"></i>桌號#@item.SeatName&nbsp;&nbsp;&nbsp;點餐時間: @item.OrderTime.ToString("HH:mm:ss")
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="card@(item.Id)" class="accordion-collapse collapse" data-bs-parent="#accordion@(item.Id)">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <li>菜品: @item.ProductName</li>
+                                                <li>數量: @item.Qty</li>
+                                                <li>預期出餐: @item.OrderTime.AddMinutes(15).ToString("HH:mm:ss")</li>
+                                                <li>備註: @item.Notes</li>
+                                            </ul>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-success" value="製作中" data-seatCart-id="@item.Id" onclick="updateStatus(this)">製作</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <!-- 中間其他內容 -->
+        <div class="col-3 p-0 border rounded custom-border" id="confirmMeals">
+            @foreach (var item in Model)
+            {
+                if (item.CartStatus.Trim() == "製作中")
+                {
+                    <div class="card mb-3 w-100" data-ordertime="@item.OrderTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                        <div class="card-body">
+                            <div class="accordion accordion-flush" id="accordion@(item.Id)">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#card@(item.Id)">
+                                            <div class="button-content">
+                                                <i class="ri-restaurant-2-line"></i>桌號#@item.SeatName&nbsp;&nbsp;&nbsp;點餐時間: @item.OrderTime.ToString("HH:mm:ss")
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="card@(item.Id)" class="accordion-collapse collapse" data-bs-parent="#accordion@(item.Id)">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <li>菜品: @item.ProductName</li>
+                                                <li>數量: @item.Qty</li>
+                                                <li>預期出餐: @item.OrderTime.AddMinutes(15).ToString("HH:mm:ss")</li>
+                                                <li>備註: @item.Notes</li>
+                                            </ul>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-warning" value="待上菜" data-seatCart-id="@item.Id" onclick="updateStatus(this)">製作完畢</button>
+                                        <button class="btn btn-sm btn-outline-danger" value="已確認" data-seatCart-id="@item.Id" onclick="updateStatus(this)">取消</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <!-- 右側其他內容 -->
+        <div class="col-4 p-0 border rounded custom-border" id="confirmSenting">
+            @foreach (var item in Model)
+            {
+                if (item.CartStatus.Trim() == "待上菜")
+                {
+                    <div class="card mb-3 w-100" data-ordertime="@item.OrderTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                        <div class="card-body">
+                            <div class="accordion accordion-flush" id="accordion@(item.Id)">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#card@(item.Id)">
+                                            <div class="button-content">
+                                                <i class="ri-restaurant-2-line"></i>桌號#@item.SeatName&nbsp;&nbsp;&nbsp;點餐時間: @item.OrderTime.ToString("HH:mm:ss")
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="card@(item.Id)" class="accordion-collapse collapse" data-bs-parent="#accordion@(item.Id)">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <li>菜品: @item.ProductName</li>
+                                                <li>數量: @item.Qty</li>
+                                                <li>預期出餐: @item.OrderTime.AddMinutes(15).ToString("HH:mm:ss")</li>
+                                                <li>備註: @item.Notes</li>
+                                            </ul>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-info" value="已完成" data-seatCart-id="@item.Id" onclick="updateStatus(this)">送餐</button>
+                                        <button class="btn btn-sm btn-outline-danger" value="製作中" data-seatCart-id="@item.Id" onclick="updateStatus(this)">取消</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section CSS{
+    <style>
+        @@keyframes flashRed {
+            0%, 100% {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: red;
+            }
+        }
+
+        @@keyframes flashYellow {
+            0%, 100% {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: yellow;
+            }
+        }
+
+        .flash-red-border {
+            animation: flashRed 1s infinite;
+            border: 2px solid transparent;
+        }
+
+        .flash-yellow-border {
+            animation: flashYellow 1s infinite;
+            border: 2px solid transparent;
+        }
+
+        .breadcrumb-item {
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        .custom-border {
+            color: #000;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const orderTime = new Date(card.dataset.ordertime);
+                const now = new Date();
+                const diffMinutes = Math.abs(now - orderTime) / (1000 * 60);
+
+                if (diffMinutes >= 30) {
+                    card.classList.add('flash-red-border');
+                } else if (diffMinutes >= 15) {
+                    card.classList.add('flash-yellow-border');
+                }
+            });
+        });
+
+
+        async function updateStatus(button) {
+            const id = button.getAttribute('data-seatCart-id');
+            const status = button.value;
+            try {
+                const response = await fetch('@Url.Content("~/api/SeatCartApiController/UpdateStatus")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ id: id, status: status }) // 將 id 和 status 一起作為請求體發送
+                });
+
+                const data = await response.json(); // 等待並解析 JSON 響應
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "更新成功",
+                        text: data.message,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "更新失敗",
+                        text: data.message,
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "發生錯誤",
+                    text: error,
+                });
+            }
+        }
+
+
+        async function updateAllStatus(oldStatusId,newStatusId) {
+            try {
+                const response = await fetch('@Url.Content("~/api/SeatCartApiController/updateAllStatus")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ oldStatusId: oldStatusId, newStatusId: newStatusId })
+                });
+
+                const data = await response.json(); // 等待並解析 JSON 響應
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "更新成功",
+                        text: data.message,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "更新失敗",
+                        text: data.message,
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "發生錯誤",
+                    text: data.message,
+                });
+            }
+        }
+
+    </script>
+}

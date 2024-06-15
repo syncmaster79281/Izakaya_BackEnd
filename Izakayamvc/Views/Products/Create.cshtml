@@ -1,0 +1,314 @@
+﻿@using Izakayamvc.ViewModels.Vms
+﻿@model Izakayamvc.ViewModels.Vms.ProductCreateVm
+
+@{
+    ViewBag.Title = "Create";
+    //var categories = ViewBag.Categories as IEnumerable<SelectListItem>;
+    var categories = ViewBag.Categories as SelectList;
+}
+
+<h2 style="text-align:center">新增商品</h2>
+
+<h4>
+    想要新增大量商品?
+    @Html.Partial(PartialViews.ExcelTableSweetAlert)
+</h4>
+@using (Html.BeginForm("Create", "Products", null, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="row">
+            <div class="mb-2 col">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="mb-2 col">
+                <label class="form-label col-md-2" for="Name">分類</label>
+                <select class="form-select" data-val="true" data-val-number="The field 分類名稱 must be a number." data-val-required="分類名稱必填" id="CategoryId" name="CategoryId">
+                </select>
+                <span class="field-validation-error text-danger" data-valmsg-for="Unitprice" data-valmsg-replace="true" id="categoryspan">請選擇分類</span>
+                @*@Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "form-label col-md-2" })
+                    @Html.DropDownListFor(model => model.CategoryId, categories, new { @class = "form-select" })
+                    @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })*@
+            </div>
+
+            <div class="mb-2 col">
+                @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "form-label col-md-2" })
+
+                @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+            </div>
+            @*<div class="mb-2 col">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(model => model.IsLaunched,new {@class="form-check-input"})
+                        @Html.LabelFor(model => model.IsLaunched, htmlAttributes: new { @class = "form-label col-md-2" })
+                        @Html.ValidationMessageFor(model => model.IsLaunched, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>*@
+
+            <div class="col">
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.DisplayOrder, htmlAttributes: new { @class = "form-label col-md-2" })
+
+                    @Html.EditorFor(model => model.DisplayOrder, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    @Html.ValidationMessageFor(model => model.DisplayOrder, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!--<div class="mb-5 ">
+                @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "form-label col-md-2" })
+                <input class="form-control" type="file" name="Image" id="Image">-->
+            @*@Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control form-control-sm" } })*@
+            <!--@Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+
+            </div>-->
+
+
+            <div class="mb-2 col-9">
+                @Html.LabelFor(model => model.Present, htmlAttributes: new { @class = "form-label col-md-2" })
+                <div>
+                    @Html.TextAreaFor(model => model.Present, 10, 100, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                    @Html.ValidationMessageFor(model => model.Present, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="mb-2">
+            <button id="submit" class="btn btn-sm btn-outline-primary" disabled>
+                <i class="fa-regular fa-floppy-disk"></i>
+                存檔
+            </button>
+            @Html.Partial(PartialViews.BackToList)
+
+        </div>
+
+    </div>
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+@section Scripts {
+    <script>
+        let nowcategory = "-1";
+        const categoryId = document.querySelector("#CategoryId")
+        const categoryspan = document.querySelector("#categoryspan")
+        const btnsubmit = document.querySelector("#submit")
+
+        const getCategoryList=async () => {
+            const response = await fetch('@Url.Content("~/api/ProductCategoryApi")');
+            const datas = await response.json();
+            const categoryListHtml=datas.map(data => {
+                return `<option value="${data.id}">${data.name}</option>`
+            })
+            const firstitem = `<option selected="selected" value=" - 1">請選擇商品分類</option>`;
+            categoryId.innerHTML = firstitem + categoryListHtml.join("");
+        }
+
+        categoryId.addEventListener("change", (elem) => {
+            nowcategory = elem.target.value;
+            if (nowcategory === "-1") {
+                categoryspan.classList.remove("d-none");
+                btnsubmit.setAttribute("disabled", "disabled")
+            } else {
+                categoryspan.classList.add("d-none");
+                btnsubmit.removeAttribute("disabled")
+            }
+        })
+
+
+        const ExcelJS = window.ExcelJS;
+        const excelInput = document.querySelector("#excelInput");
+
+        //呼叫api傳入
+        const productsExcelApi = async (data) => {
+            console.log(JSON.stringify(data));
+            const response = await fetch('@Url.Content("~/api/ProductsExcelApi")', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const result = await response.text();
+            console.log(result);
+            if (result === '"true"') {
+                Swal.fire({
+                    icon:"success",
+                    title: '匯入成功!!\r\n 正在導向回商品頁面',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                 setTimeout(() => {
+                    location.href = '@Url.Content("~/Products")';
+                    },2000)
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: result,
+                });
+            }
+        }
+
+
+
+        //取得上傳檔案
+        excelInput.addEventListener("change", (elem) => {
+            const file = elem.target.files[0];
+            if (file === null) {
+                Swal.fire({
+                    icon: "error",
+                    title: "沒有上傳任何檔案!!!",
+                });
+                return;
+            }
+
+            if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+                file.type === "application/vnd.ms-excel") {
+                getData(file);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "不接受檔案!!!"
+                });
+                excelInput.value = "";
+                return;
+            }
+        })
+
+        //匯入Excel
+        //todo
+        const previewExcelData = (data) => {
+            Swal.fire({
+                title: '預覽資料',
+                html: `<table id="previewTable" class="table table-bordered table-hover"></table>`,
+                width: 1000,
+                showCloseButton: true,
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonText: "確定上傳!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //自己呼叫Api
+                    productsExcelApi(data);
+                } else {
+                    excelInput.value = "";
+                }
+            });
+
+            const previewTable = document.querySelector("#previewTable");
+            const html=data.map(product => {
+                const { productName, productCategory, UnitPrice, Present, DisplayOrder } = product;
+                let htmltext = `<tr><td>${productName}</td><td>${productCategory}</td><td>${UnitPrice}</td><td>${Present}</td><td>${DisplayOrder}</td></tr>`;
+                return htmltext;
+            })
+            previewTable.innerHTML = html.join();
+        }
+        //轉換名稱
+        const mapToKey = (key)=>{
+            switch (key) {
+                case '產品名稱':
+                    return 'productName';
+                case '產品分類':
+                    return 'productCategory';
+                case '單價':
+                    return 'UnitPrice';
+                case '介紹':
+                    return 'Present';
+                case '排序名次':
+                    return 'DisplayOrder';
+                // 可以添加其他映射
+                default:
+                    return key;
+            }
+        }
+
+        const getData = (file) => {
+            if (file !== null) {
+                let reader = new FileReader();
+                //使用 FileReader API 取得二進位資料 (ArrayBuffer格式)
+                reader.readAsArrayBuffer(file);
+                //取得資料(ArrayBuffer格式)
+                reader.onload = (e) => {
+                    const data = e.target.result;
+                    //創建一個新資料表
+                    const workbook = new ExcelJS.Workbook();
+                    //透過load方法把資料放入新資料表中
+                    workbook.xlsx.load(data).then(() => {
+                        const sheet = workbook.worksheets[0];
+                        const data = sheet.getSheetValues();
+                        // 取得標題行
+                        const headers = data[1];
+                        // 從第三行（索引 2）開始，將每一行轉換為物件
+                        const products = [];
+                        for (let i = 2; i < data.length; i++) {
+                            const product = {};
+                            for (let j = 0; j < headers.length; j++) {
+                                if (data[i][j] !== undefined) {
+                                    const key = mapToKey(headers[j])
+                                    product[key] = data[i][j];
+                                }
+                            }
+                            products.push(product);
+                        }
+
+                        // 現在，products 陣列包含了每一筆資料的物件形式
+                        console.log(products);
+
+                        //傳出去的資料為Array{}
+                        previewExcelData(products);
+                    })
+                }
+            } else {
+                throw new Error('No file uploaded')
+            }
+        }
+        //取得產品範例Excel檔案
+        const downloadExcel = () => {
+            const workbook = new ExcelJS.Workbook(); // 創建試算表檔案
+            const sheet = workbook.addWorksheet('欄位範例'); //在檔案中新增工作表 參數放自訂名稱
+
+            sheet.properties.defaultColWidth = 30;
+            sheet.addTable({ // 在工作表裡面指定位置、格式並用columsn與rows屬性填寫內容
+                name: 'ProductDemo',  // 表格內看不到的，讓你之後想要針對這個table去做額外設定的時候，可以指定到這個table
+                ref: 'A1', // 從A1開始
+                columns: [
+                    { name: '產品名稱', key: 'productName' },
+                    { name: '產品分類', key: 'productCategory' },
+                    { name: '單價', key: 'UnitPrice' },
+                    { name: '介紹', key: 'Present', width: 200 },
+                    { name: '排序名次', key: 'DisplayOrder' }
+                ],
+                rows: [
+                    ['孟婆湯', '湯品', '150', '讓你忘卻煩惱', '1'],
+                    ['鮭魚味噌湯', '湯品', '200', '使用新鮮的鮭魚和高品質的味噌來製作這道湯品。這讓湯的口感更加濃郁和美味。先將鮭魚片或鮭魚塊與味噌一同煮沸，接著加入柔軟的豆腐塊和蔬菜，為湯品增添多樣的口感和營養成分。', '5']
+                ],
+            });
+
+            // 表格裡面的資料都填寫完成之後，訂出下載的callback function
+            // 異步的等待他處理完之後，創建url與連結，觸發下載
+            workbook.xlsx.writeBuffer().then((content) => {
+                const link = document.createElement("a");
+                const blobData = new Blob([content], {
+                    type: "application/vnd.ms-excel;charset=utf-8;"
+                });
+                link.download = '產品表範例.xlsx';
+                link.href = URL.createObjectURL(blobData);
+                link.click();
+            });
+        }
+        getCategoryList();
+    </script>
+}

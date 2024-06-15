@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D0E539A8-97D0-4FD2-BEA8-D60F33B3BD90}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISPAN.Izakaya.BLL_Service_</RootNamespace>
+    <AssemblyName>ISPAN.Izakaya.BLL%28Service%29</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.28\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivityService.cs" />
+    <Compile Include="ArticleService.cs" />
+    <Compile Include="BranchService.cs" />
+    <Compile Include="CartSettingService.cs" />
+    <Compile Include="CartStatusService.cs" />
+    <Compile Include="CombinedOrderService.cs" />
+    <Compile Include="EmployeeService.cs" />
+    <Compile Include="MemberService.cs" />
+    <Compile Include="CouponService.cs" />
+    <Compile Include="OrderDetailService.cs" />
+    <Compile Include="OrderDiscountService.cs" />
+    <Compile Include="OrderPaymentService.cs" />
+    <Compile Include="OrderService.cs" />
+    <Compile Include="PaymentMethodService.cs" />
+    <Compile Include="PaymentStatusService.cs" />
+    <Compile Include="ProductCategoryService.cs" />
+    <Compile Include="SeatCartService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProductService.cs" />
+    <Compile Include="ProductStockService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISPAN.Izakaya.DAL.Dapper\ISPAN.Izakaya.DAL.Dapper.csproj">
+      <Project>{02D9DFA3-E773-4053-814D-35B9AA508FA0}</Project>
+      <Name>ISPAN.Izakaya.DAL.Dapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISPAN.Izakaya.Dtos\ISPAN.Izakaya.Dtos.csproj">
+      <Project>{E1A79488-A9D0-4364-B426-E4275BAC5307}</Project>
+      <Name>ISPAN.Izakaya.Dtos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISPAN.Izakaya.Entities\ISPAN.Izakaya.Entities.csproj">
+      <Project>{4AD090E5-89D9-40D7-97AB-48221A5CCF33}</Project>
+      <Name>ISPAN.Izakaya.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISPAN.Izakaya.IDAL%28IRepo%29\ISPAN.Izakaya.IDAL%28IRepo%29.csproj">
+      <Project>{9AB22D47-20F5-40E1-B0D4-AB4EE7FBFD3E}</Project>
+      <Name>ISPAN.Izakaya.IDAL%28IRepo%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{B5ED8080-7086-4BE1-ABFF-3F1B15426FA3}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

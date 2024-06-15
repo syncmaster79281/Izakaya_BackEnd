@@ -1,0 +1,98 @@
+﻿@using Izakayamvc.ViewModels.Vms
+@model Izakayamvc.ViewModels.Vms.EmployeeVm
+
+@{
+    ViewBag.Title = "Edit";
+}
+<h2 style="text-align: center";>編輯員工資料</h2>
+
+@section CSS{
+    <style>
+        h2 {
+            max-width: 500px;
+        }
+        input {
+            max-width: 500px;
+        }
+        .inputwidth{
+            max-width: 500px;
+        }
+    </style>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+
+
+    @Html.HiddenFor(model => model.Id)
+
+
+    @{
+        var Branchdata = new List<SelectListItem>
+        {
+            new SelectListItem { Text = "台北", Value = "1" },
+            new SelectListItem { Text = "台中", Value = "2" },
+        };
+    }
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "form-label col-md-2", })
+        @Html.DropDownListFor(model => model.BranchId, Branchdata, new { @class = "form-control form-control-sm inputwidth" })
+        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+    </div>
+    @{
+        var Roles = new List<SelectListItem>
+        {
+            new SelectListItem { Text = "總店長", Value = "總店長" },
+            new SelectListItem { Text = "分店長", Value = "分店長" },
+            new SelectListItem { Text = "員工", Value = "員工" }
+        };
+    }
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.Department, htmlAttributes: new { @class = "form-label col-md-2", })
+        @Html.DropDownListFor(model => model.Department, Roles, new { @class = "form-control form-control-sm inputwidth" })
+        @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.HireDate, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.EditorFor(model => model.HireDate, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.HireDate, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.EmployeePassword, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.EditorFor(model => model.EmployeePassword, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.EmployeePassword, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-2">
+        @Html.Partial(PartialViews.SaveNewButton)
+        @Html.Partial(PartialViews.BackToList)
+    </div>
+</div>
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

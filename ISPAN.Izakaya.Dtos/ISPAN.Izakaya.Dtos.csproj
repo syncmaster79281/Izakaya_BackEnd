@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E1A79488-A9D0-4364-B426-E4275BAC5307}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISPAN.Izakaya.Dtos</RootNamespace>
+    <AssemblyName>ISPAN.Izakaya.Dtos</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.28\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivityDto.cs" />
+    <Compile Include="ActivityItemDto.cs" />
+    <Compile Include="ArticleDto.cs" />
+    <Compile Include="BranchDto.cs" />
+    <Compile Include="CartSettingDto.cs" />
+    <Compile Include="CartStatusChangeDto.cs" />
+    <Compile Include="CartStatusDto.cs" />
+    <Compile Include="CombinedOrderDto.cs" />
+    <Compile Include="CouponDto.cs" />
+    <Compile Include="CouponListDto.cs" />
+    <Compile Include="CouponTypeDto.cs" />
+    <Compile Include="EmployeeDto.cs" />
+    <Compile Include="MealDetailDto.cs" />
+    <Compile Include="MemberDto.cs" />
+    <Compile Include="MemberListDto.cs" />
+    <Compile Include="OrderDetailDto.cs" />
+    <Compile Include="OrderDiscountDto.cs" />
+    <Compile Include="OrderDto.cs" />
+    <Compile Include="OrderPaymentDto.cs" />
+    <Compile Include="Pagination.cs" />
+    <Compile Include="PaymentMethodDto.cs" />
+    <Compile Include="PaymentStatusDto.cs" />
+    <Compile Include="ProductCategoryDto.cs" />
+    <Compile Include="ProductDto.cs" />
+    <Compile Include="ProductStockDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RewardDto.cs" />
+    <Compile Include="SearchDataDto.cs" />
+    <Compile Include="SeatCartDto.cs" />
+    <Compile Include="SeatDto.cs" />
+    <Compile Include="SortPaymentDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

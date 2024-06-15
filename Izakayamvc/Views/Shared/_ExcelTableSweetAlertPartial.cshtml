@@ -1,0 +1,121 @@
+﻿<div class="mb-3">
+    <label>匯入Excel檔案: </label>
+    <input type="file" id="excelInput" />
+</div>
+<div class="mb-3">
+    <button class="btn btn-primary" onclick="downloadExcel()">取得Excel範例</button>
+</div>
+
+
+@section Scripts{
+    //使用 Excel.js
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    //使用SweetAlert2
+    @*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+    <script>
+        const ExcelJS = window.ExcelJS;
+        const excelInput = document.querySelector("#excelInput");
+
+        excelInput.addEventListener("change", (elem) => {
+            const file = elem.target.files[0];
+            getData(file);
+        })
+
+        const previewExcelData = (data) => {
+            Swal.fire({
+                title: '預覽資料',
+                html: `<table id="previewTable" class="table table-bordered table-hover"></table>`,
+                width: 1000,
+                showCloseButton: true,
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonText: "確定上傳!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //自己呼叫Api
+                    console.log(data);
+                    console.log(JSON.stringify(data));
+                    async () => {
+                        const response = await fetch('@Url.Content("~/api/ProductsApi")', {
+                            method: 'POST',
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                    
+                    }
+                }
+            });
+            const previewTable = document.querySelector("#previewTable");
+            previewTable.innerHTML = '';
+            // 使用 data 填充 HTML 表格
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell.toString();
+                    tr.appendChild(td);
+                });
+                previewTable.appendChild(tr);
+            });
+        }
+
+        const getData = (file) => {
+            if (file !== null) {
+                let reader = new FileReader();
+                //使用 FileReader API 取得二進位資料 (ArrayBuffer格式)
+                reader.readAsArrayBuffer(file);
+                //取得資料(ArrayBuffer格式)
+                reader.onload = (e) => {
+                    const data = e.target.result;
+                    //創建一個新資料表
+                    const workbook = new ExcelJS.Workbook();
+                    //透過load方法把資料放入新資料表中
+                    workbook.xlsx.load(data).then(() => {
+                        const sheet = workbook.worksheets[0];
+                        //傳出去的資料為Array{}
+                        previewExcelData(sheet.getSheetValues());
+                    })
+                }
+            } else {
+                throw new Error('No file uploaded')
+            }
+        }
+        //取得產品範例Excel檔案
+        const downloadExcel = () => {
+            const workbook = new ExcelJS.Workbook(); // 創建試算表檔案
+            const sheet = workbook.addWorksheet('欄位範例'); //在檔案中新增工作表 參數放自訂名稱
+
+            sheet.properties.defaultColWidth = 30;
+            sheet.addTable({ // 在工作表裡面指定位置、格式並用columsn與rows屬性填寫內容
+                name: 'ProductDemo',  // 表格內看不到的，讓你之後想要針對這個table去做額外設定的時候，可以指定到這個table
+                ref: 'A1', // 從A1開始
+                columns: [
+                    { name: '產品名稱', key: 'productName' },
+                    { name: '產品分類', key: 'productCategory' },
+                    { name: '單價', key: 'UnitPrice' },
+                    { name: '介紹', key: 'Present', width: 200 },
+                    { name: '排序名次', key: 'DisplayOrder' }
+                ],
+                rows: [
+                    ['烤秋刀魚', '烤物', '100', '簡單美味的燒烤料理', '1'],
+                    ['天婦羅', '炸物', '200', '炸到酥脆的蔬菜搭配清爽的醬料', '5']
+                ],
+            });
+
+            // 表格裡面的資料都填寫完成之後，訂出下載的callback function
+            // 異步的等待他處理完之後，創建url與連結，觸發下載
+            workbook.xlsx.writeBuffer().then((content) => {
+                const link = document.createElement("a");
+                const blobData = new Blob([content], {
+                    type: "application/vnd.ms-excel;charset=utf-8;"
+                });
+                link.download = '產品表範例.xlsx';
+                link.href = URL.createObjectURL(blobData);
+                link.click();
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,193 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.ReservationVM>
+
+@{
+    ViewBag.Title = "TodayBranch01Reservation";
+}
+
+<h2 style="text-align:center">1號店當日訂位表</h2>
+<div class="text-end">
+    <p>
+        <a href="@Url.Action("CreateBranch01Reservation", "CalendarReservations")" class="btn btn-sm btn-outline-success">
+            <i class="fa-solid fa-plus"></i>
+            新增訂位
+        </a>
+    </p>
+</div>
+
+<div class="calendar">
+    @foreach (var item in Model)
+    {
+        <div class="day">
+            <div class="date">@item.ReservationTime.Month 月 @item.ReservationTime.Day 號</div>
+            <div class="events">
+                <div class="event @(int.Parse(item.FillUp) == 1 ? "line-through" : "")">
+
+                    <span class="">@Html.DisplayNameFor(model => model.Name): @item.Name</span>
+                    <span class="">@Html.DisplayNameFor(model => model.Tel): @item.Tel</span>
+                    <span class="">@Html.DisplayNameFor(model => model.Qty): @item.Qty 位</span>
+                    <span class="">@Html.DisplayNameFor(model => model.ReservationTime): @item.ReservationTime</span>
+                    <span class="">@Html.DisplayNameFor(model => model.Status): @item.Status</span>
+                    <span class="">@Html.DisplayNameFor(model => model.BranchId): @item.BranchId</span>
+                    <span class="">@Html.DisplayNameFor(model => model.SeatId): @item.SeatId</span>
+                    <span class="">@Html.DisplayNameFor(model => model.FillUp): @item.FillUp</span>
+                </div>
+
+
+                <!-- Add more event details if needed -->
+
+            </div>
+            <div>
+                <a href="@Url.Action("EditReservation", "CalendarReservations",  new { Id = item.Id, returnUrl = @Url.Content("~/CalendarReservations/TodayBranch01Reservation") })" class="btn btn-sm btn-outline-primary">
+                    <i class="fa-solid fa-pencil"></i>
+                    編輯
+                </a>
+                <a href="@Url.Action("DeleteTheDayReservation", "CalendarReservations",  new { reservationId = item.Id, returnUrl = @Url.Content("~/CalendarReservations/TodayBranch01Reservation") + "?date=" + item.ReservationTime.Year + "/" + item.ReservationTime.Month + "/" + item.ReservationTime.Day})" class="btn btn-sm btn-outline-danger">
+                    <i class="fa-solid fa-delete-left"></i>
+                    刪除
+                </a>
+
+
+
+
+                <button class="btn btn-sm btn-outline-secondary check-button " data-id="@item.Id">
+                    <i class="fa-solid fa-chair"></i>
+                    就位
+                </button>
+            </div>
+            <div id="buttons-container-@item.Id" style="display: none;">
+                <button class="btn btn-sm btn-outline-secondary toggle-button" data-id="@item.Id">
+                    <i class="fa-solid fa-check"></i>
+                    確定就位
+                </button>
+                <button class="btn btn-sm btn-outline-secondary off-button" data-id="@item.Id">
+                    <i class="fa-solid fa-times"></i>
+                    尚未就位
+                </button>
+            </div>
+
+
+        </div>
+    }
+</div>
+
+@section Scripts {
+
+
+
+    <script>
+        // 點選"確定就位" 按鈕時 會執行
+        $(document).ready(function() {
+            // Add a click event listener to each toggle button
+            $('.toggle-button').on('click', function() {
+                // Get the reservationId from the data-reservation-id attribute of the button
+                var reservationId = $(this).attr('data-id');
+                console.log(reservationId);
+
+                // Send an Ajax request to UpdateFillUp action in the controller
+                $.ajax({
+                    url: '@Url.Action("UpdateFillUp", "CalendarReservations")',
+                    method: 'POST',
+                    data: { reservationId: reservationId },
+                    success: function(response) {
+                        // Handle success, for example, refresh the page
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // 點選"尚未就位" 按鈕時 會執行
+    $(document).ready(function() {
+        
+        $('.off-button').on('click', function() {
+            
+            var reservationId = $(this).attr('data-id');
+            console.log(reservationId);
+
+            
+            $.ajax({
+                url: '@Url.Action("ClearFillUp", "CalendarReservations")',
+                method: 'POST',
+                data: { reservationId: reservationId },
+                success: function(response) {
+                    
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+        $('.check-button').on('click', function () {
+            var id = $(this).data('id');
+            $(`#buttons-container-${id}`).show();
+        });
+    </script>
+
+    
+
+
+
+
+
+}
+
+@section CSS{
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        .date {
+            font-weight: bold;
+        }
+
+        .events {
+            margin-top: 10px;
+        }
+
+        .event {
+            margin: 5px 0;
+        }
+
+            .event span {
+                display: block;
+            }
+
+        .delete-link {
+            color: red; /* 設置文本顏色為紅色 */
+            font-weight: bold; /* 設置粗體 */
+            text-decoration: none; /* 移除下劃線 */
+        }
+
+            .delete-link:hover {
+                text-decoration: underline; /* 滑鼠懸停時添加下劃線效果 */
+            }
+
+        .line-through {
+            text-decoration: line-through;
+            font-weight: bold;
+        }
+    </style>
+}

@@ -1,0 +1,9 @@
+﻿@model int
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<a href="@Url.Action("Edit", controllerName, new { id = Model })" class="btn btn-sm btn-outline-primary">
+    <i class="fa-solid fa-pencil"></i>
+    編輯/刪除
+</a>

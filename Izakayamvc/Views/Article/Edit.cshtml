@@ -1,0 +1,122 @@
+﻿@using Izakayamvc.ViewModels.Vms
+@model Izakayamvc.ViewModels.Vms.ArticleVm
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@section CSS{
+    <style>
+
+        h2 {
+            max-width: 500px;
+        }
+        input {
+            max-width: 500px;
+        }
+        textarea {
+            max-width: 500px;
+        }
+        .inputwidth {
+            max-width: 500px;
+        }
+    </style>
+}
+
+<h2 style="text-align:center">編輯文章</h2>
+
+@using (Html.BeginForm("Edit", "Article", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+
+
+    @Html.HiddenFor(model => model.Id)
+
+
+    @{
+        var Emps = new List<SelectListItem>();
+        foreach (var item in ViewBag.Employees)
+        {
+            Emps.Add(new SelectListItem { Text = item.Name, Value = item.Id.ToString() });
+        }
+    }
+    <div class="mb-2">
+        @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "form-label col-md-2", })
+        @Html.DropDownListFor(model => model.EmployeeId, Emps, new { @class = "form-control form-control-sm inputwidth" })
+        @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+    </div>
+
+    @{
+        var Categories = new List<SelectListItem>();
+        foreach (var item in ViewBag.Categories)
+        {
+            Categories.Add(new SelectListItem { Text = item.Category, Value = item.Id.ToString() });
+        }
+    }
+    <div class="mb-2">
+        @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "form-label col-md-2", })
+        @Html.DropDownListFor(model => model.CategoryId, Categories, new { @class = "form-control form-control-sm inputwidth" })
+        @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "form-label col-md-2" })
+
+        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2 h-auto">
+        @Html.LabelFor(model => model.Contents, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.TextAreaFor(model => model.Contents, new { @class = "form-control form-control-sm", rows = "10" })
+        @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.PublishDate, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.TextBoxFor(model => model.PublishDate, new { @class = "form-control form-control-sm", type = "datetime-local", Value = Model.PublishDate.ToString("yyyy-MM-ddTHH:mm") })
+        @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.HideTime, htmlAttributes: new { @class = "form-label col-md-2" })
+        @Html.TextBoxFor(model => model.HideTime, new { @class = "form-control form-control-sm", type = "datetime-local", Value = Model.HideTime.ToString("yyyy-MM-ddTHH:mm") })
+        @Html.ValidationMessageFor(model => model.HideTime, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "form-label col-md-2" })
+
+        <div class="checkbox">
+            @Html.EditorFor(model => model.Status)
+            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <div class="mb-2">
+        @Html.LabelFor(model => model.ImageURL, htmlAttributes: new { @class = "form-label col-md-2" })
+
+        @Html.EditorFor(model => model.ImageURL, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+        @Html.ValidationMessageFor(model => model.ImageURL, "", new { @class = "text-danger" })
+
+    </div>
+
+    <div class="mb-2">
+        @Html.Partial(PartialViews.SaveNewButton)
+        @Html.Partial(PartialViews.BackToList)
+    </div>
+</div>
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

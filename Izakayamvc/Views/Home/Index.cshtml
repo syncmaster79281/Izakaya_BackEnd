@@ -1,0 +1,337 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    var categories = Json.Encode(ViewBag.Categories);
+    var totalAmount = Json.Encode(ViewBag.TotalAmount);
+    var netAmount = Json.Encode(ViewBag.NetAmount);
+    var customers = Json.Encode(ViewBag.Customers);
+    var cashCount = Json.Encode(Model.Cash);
+    var cardCount = Json.Encode(Model.Card);
+    var electronicCount = Json.Encode(Model.Electronic);
+    var ticketCount = Json.Encode(Model.Ticket);
+}
+
+
+<div class="pagetitle">
+    <h2 style="text-align:center">營收狀況</h2>
+    <nav class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div>
+
+<form method="get" action="@Url.Action("Index")" class="mb-3" id="form">
+    <div class="row align-items-end">
+        <div class="col-2 text-center">
+            <label for="ChooseTime" class="form-label mb-1">選擇日期 : </label>
+        </div>
+        <div class="col-4">
+            <input type="date" class="form-control form-control-sm" id="start" name="start" value="@ViewBag.StartDate" min="2023-01-01" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-4">
+            <input type="date" class="form-control form-control-sm" id="end" name="end" value="@ViewBag.StartDate" min="2023-01-01" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-2 text-left">
+            <button type="submit" id="searchbtn" class="btn btn-sm btn-outline-primary ml-auto">查詢</button>
+        </div>
+    </div>
+</form>
+<section class="section dashboard">
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xxl-6 col-md-4">
+                    <!--TotalAmount Card-->
+                    <div class="card info-card revenue-card">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=0")">Today</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-30")">This Month</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-365")">This Year</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">總營業額 <span>| @ViewBag.Filter</span></h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.TotalMoney</h6>
+                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End TotalAmount Card -->
+                </div>
+                <div class="col-xxl-6 col-md-4">
+                    <!--NetAmount Card-->
+                    <div class="card info-card revenue-card">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=0")">Today</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-30")">This Month</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-365")">This Year</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">淨額 <span>| @ViewBag.Filter</span></h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.NetMoney</h6>
+                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End NetAmount Card -->
+                </div>
+                <div class="col-xxl-6 col-md-4">
+                    <!--Customers Card -->
+                    <div class="card info-card customers-card">
+
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=0")">Today</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-30")">This Month</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-365")">This Year</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">來客數 <span>| @ViewBag.Filter</span></h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.People</h6>
+                                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--End Customers Card -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xxl-6 col-md-8">
+                    <!--Reports -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+                                    <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=0")">Today</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-30")">This Month</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-365")">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">Reports <span>/@ViewBag.Filter</span></h5>
+                                <!--Line Chart -->
+                                <div id="reportsChart"></div>
+                                <!--End Line Chart -->
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--End Reports-->
+                </div>
+                <div class="col-xxl-6 col-md-4">
+                    <!--Website Traffic-->
+                    <div class="card">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=0")">Today</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-30")">This Month</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content("~/home/index?day=-365")">This Year</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">消費行為統計 <span>| @ViewBag.Filter</span></h5>
+
+                            <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                        </div>
+                    </div>
+                    <!--End Website Traffic-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const role = "@Html.Raw(ViewBag.Role)";
+            const lastTwoChars = role.slice(-2);            // 取得最後兩個字
+            console.log(lastTwoChars);
+            if (lastTwoChars !== "店長") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Opps',
+                    text: '不是店長無權觀看',
+                }).then((result) => {
+                    if (result.value) {
+                        window.location.href = "@Url.Action("StartPage", "Home")";
+                    }
+                });
+            }
+            else {
+              
+                const btn = document.querySelector("#searchbtn");
+                const form = document.querySelector("#form");
+                btn.addEventListener("click", function (event) {
+                     event.preventDefault();
+                     const start = document.querySelector("#start").value;
+                     const end = document.querySelector("#end").value;
+                     form.submit();
+                     window.location.href = "@Url.Action("Index", "Home")?start=" + start + "&end=" + end;
+                     console.log(start);
+                    
+                    });
+
+                 ////////////////////////////////////////////////////////////////////   Line Chart
+                 new ApexCharts(document.querySelector("#reportsChart"), {
+                     series: [{
+                         name: 'TotalAmount',
+                         data: @Html.Raw(totalAmount),
+                     }, {
+                         name: 'NetAmount',
+                         data: @Html.Raw(netAmount),
+                     }, {
+                         name: 'Customers',
+                         data: @Html.Raw(customers),
+                     }],
+                     chart: {
+                         height: 350,
+                         type: 'area',
+                         toolbar: {
+                             show: false
+                         },
+                     },
+                     markers: {
+                         size: 4
+                     },
+                     colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                     fill: {
+                         type: "gradient",
+                         gradient: {
+                             shadeIntensity: 1,
+                             opacityFrom: 0.3,
+                             opacityTo: 0.4,
+                             stops: [0, 90, 100]
+                         }
+                     },
+                     dataLabels: {
+                         enabled: false
+                     },
+                     stroke: {
+                         curve: 'smooth',
+                         width: 2
+                     },
+                     xaxis: {
+                         type: 'datetime',
+                         categories: @Html.Raw(categories),
+                     },
+                     tooltip: {
+                         x: {
+                             format: 'yyyy/MM/dd'
+                         },
+                     }
+                 }).render();
+                 /////////////////////////////////////////////////////////////////////////  Website Traffic
+                 echarts.init(document.querySelector("#trafficChart")).setOption({
+                     tooltip: {
+                         trigger: 'item'
+                     },
+                     legend: {
+                         top: '5%',
+                         left: 'center'
+                     },
+                     series: [{
+                         name: '消費方式',
+                         type: 'pie',
+                         radius: ['40%', '70%'],
+                         avoidLabelOverlap: false,
+                         label: {
+                             show: false,
+                             position: 'center'
+                         },
+                         emphasis: {
+                             label: {
+                                 show: true,
+                                 fontSize: '18',
+                                 fontWeight: 'bold'
+                             }
+                         },
+                         labelLine: {
+                             show: false
+                         },
+                         data: [{
+                             value: @Html.Raw(cashCount),
+                             name: '現金'
+                         },
+                         {
+                             value: @Html.Raw(cardCount),
+                             name: '信用卡'
+                         },
+                         {
+                             value: @Html.Raw(electronicCount),
+                             name: '行動支付'
+                         },
+                         {
+                             value: @Html.Raw(ticketCount),
+                             name: '餐券'
+                         },
+                         ]
+                     }]
+                 });
+                 ////////////////////////////////////////////////////////////////////////////
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,141 @@
+﻿@using Izakayamvc.ViewModels.Vms
+@model IEnumerable<Izakayamvc.ViewModels.Vms.ArticleVm>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 style="text-align:center">文章列表</h2>
+
+@section CSS{
+    <stytle>
+        .tableMaxLength{
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </stytle>
+}
+<div class="d-flex align-items-center mb-2">
+    <form method="get" class="ms-2 mb-2" style="margin-bottom: 10px; margin-right: 10px;">
+        @Html.TextBox("name", null, new { @class = "form-control-inline" })
+        <input type="submit" value="查詢" class="btn btn-outline-primary btn-sm" />
+    </form>
+    <div class="ms-auto">
+        @*{ var controller = "Izakayamvc.Controllers.ArticleController"; }*@
+        @Html.Partial(PartialViews.GoToCreatePage)
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EmployeeId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contents)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PublishDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HideTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageURL)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td class="text-truncate" style="max-width: 150px;">
+                @Html.DisplayFor(modelItem => item.Contents)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PublishDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HideTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td class="text-truncate" style="max-width: 150px;">
+                @Html.DisplayFor(modelItem => item.ImageURL)
+            </td>
+            <td>
+                <div class="mb-1">
+                    <a href="@Url.Action("Edit", "Article", new { Id = item.Id})" class="btn btn-sm btn-outline-primary">
+                        <i class="fa-solid fa-pencil"></i>
+                        編輯
+                    </a>
+                </div>
+                <div class="mb-1">
+                    <a href="@Url.Action("Delete", "Article", new { Id = item.Id})" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@item.Id,event)">
+                        <i class="fa-solid fa-delete-left"></i>
+                        刪除
+                    </a>
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section Scripts{
+    <script>
+        async function confirmDelete(index, event) {
+            const id = index;
+            event.preventDefault();
+            Swal.fire({
+                title: "是否刪除?",
+                text: "這筆資料",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "刪除",
+                cancelButtonText: "取消",
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: "刪除成功",
+                        text: "資料已刪除",
+                        icon: "success"
+                    }).then((result) => {
+                        window.location.href = '@Url.Action("Delete", "Article")' + '/' + id;
+                    });
+                }
+            });
+        }
+    </script>
+}

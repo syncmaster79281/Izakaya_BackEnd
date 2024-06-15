@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.ReservationVM>
+
+@{
+    ViewBag.Title = "TheDayBranch02";
+    var reservation = Model.FirstOrDefault(); // 先獲取第一筆記錄
+    DateTime? firstReservationTime = reservation?.ReservationTime; // 使用 null 條件運算符來安全訪問 ReservationTime
+}
+
+
+<h2 style="text-align:center">2號店該日訂位表</h2>
+
+<p class="text-end">
+    @if (firstReservationTime != null)
+    {
+        var dateParam = Uri.EscapeDataString(firstReservationTime.Value.ToString("yyyy-MM-dd"));
+        var url = Url.Action("CreateBranch02Reservation", "CalendarReservations", new { date = dateParam });
+        <a href="@url" class="btn btn-sm btn-outline-success">
+            <i class="fa-solid fa-plus"></i> 新增訂位
+        </a>
+    }
+</p>
+
+<div class="calendar">
+    @foreach (var item in Model)
+    {
+        <div class="day">
+            <div class="date">@item.ReservationTime.Month 月 @item.ReservationTime.Day 號</div>
+            <div class="events">
+                <div class="event">
+                    <span>@Html.DisplayNameFor(model => model.Name): @item.Name</span>
+                    <span>@Html.DisplayNameFor(model => model.Qty): @item.Qty 位</span>
+                    <span>@Html.DisplayNameFor(model => model.ReservationTime): @item.ReservationTime.ToShortTimeString()</span>
+                    <span>@Html.DisplayNameFor(model => model.Status): @item.Status</span>
+                    <span>@Html.DisplayNameFor(model => model.BranchId): @item.BranchId</span>
+                    <span>@Html.DisplayNameFor(model => model.SeatId): @item.SeatId</span>
+                </div>
+                <!-- Add more event details if needed -->
+            </div>
+            <div>
+                <a href="@Url.Action("EditReservation", "CalendarReservations",  new { Id = item.Id, returnUrl = @Url.Content("~/CalendarReservations/TheDayBranch02") + "?date=" + item.ReservationTime.Year + "/" + item.ReservationTime.Month + "/" + item.ReservationTime.Day})" class="btn btn-sm btn-outline-primary">
+                    <i class="fa-solid fa-pencil"></i>
+                    編輯
+                </a>
+                <a href="@Url.Action("DeleteTheDayReservation", "CalendarReservations",  new { reservationId = item.Id, returnUrl = @Url.Content("~/CalendarReservations/TheDayBranch02") + "?date=" + item.ReservationTime.Year + "/" + item.ReservationTime.Month + "/" + item.ReservationTime.Day})" class="btn btn-sm btn-outline-danger">
+                    <i class="fa-solid fa-delete-left"></i>
+                    刪除
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section CSS{
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        .date {
+            font-weight: bold;
+        }
+
+        .events {
+            margin-top: 10px;
+        }
+
+        .event {
+            margin: 5px 0;
+        }
+
+        .event span {
+            display: block;
+        }
+
+        .delete-link {
+            color: orangered; /* 設置文本顏色為X色 */
+            font-weight: bold; /* 設置粗體 */
+            text-decoration: none; /* 移除下劃線 */
+        }
+
+        .delete-link:hover {
+            text-decoration: underline; /* 滑鼠懸停時添加下劃線效果 */
+        }
+    </style>
+}

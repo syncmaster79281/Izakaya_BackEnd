@@ -1,0 +1,9 @@
+﻿@*@model string*@
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<button id="submit" class="btn btn-sm btn-outline-primary">
+    <i class="fa-regular fa-floppy-disk"></i>
+    存檔
+</button>

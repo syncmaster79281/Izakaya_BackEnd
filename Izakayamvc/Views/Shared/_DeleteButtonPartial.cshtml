@@ -1,0 +1,10 @@
+﻿@*@model string*@
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<button type="submit" class="btn btn-sm btn-outline-danger">
+    <i class="fa-solid fa-delete-left"></i>
+    刪除
+</button>
+

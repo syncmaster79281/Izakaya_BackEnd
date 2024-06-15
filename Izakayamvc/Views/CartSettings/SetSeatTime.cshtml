@@ -1,0 +1,154 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.CartSettingVm>
+
+@{
+    ViewBag.Title = "SetSeatTime";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center text-center" onclick="setCloseTime(@ViewBag.BranchId)"><h2>用餐時間設定</h2></div>
+    <div class="row justify-content-around">
+        @foreach (var item in Model)
+        {
+            <div class="col-3">
+                <div class="card" data-tableName="@item.SeatName" data-tableId="@item.Id" data-seatId="@item.SeatId">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.SeatName</h5>
+                        <h5 class="card-title"><img src="~/img/icons8-time.gif" />@item.StartTime.ToString("HH:mm")</h5>
+                        <h5 class="card-title"><img src="~/img/icons8-alarm-clock.gif" />@item.EndTime.ToString("HH:mm")</h5>
+                        <h5 class="card-title"><img src="~/img/icons8-snooze.gif" />@item.ClosingTime.ToString("yyyy-MM-dd HH:mm:ss")</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        //關店時間設定
+        async function setCloseTime(branchId) {
+            const { value: closeTime } = await Swal.fire({
+                title: '設定關店時間',
+                html: `<input type="datetime-local" id="swal-input3" class="swal2-input">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                preConfirm: () => {
+                    return document.querySelector('#swal-input3').value;
+                }
+            });
+            if (closeTime) {
+                try {
+                    const response = await fetch('@Url.Content("~/api/CartSettingApiController/UpdateCloseTime")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            closeTime: closeTime,
+                            branchId: branchId
+                        }),
+                    });
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: "success",
+                            title: "更新成功",
+                            text: "已更新時間",
+                        });
+                        window.location.reload();
+                    } else {
+                        throw new Error('網路錯誤!!');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "更新失敗",
+                        text: "無法更新時間",
+                    });
+                }
+            }
+        }
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', async function () {
+                const now = new Date();
+                // 加上 2 小時
+                const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+                //修正瀏覽器時間錯誤
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false,
+                    timeZone: 'Asia/Taipei'
+                });
+
+                // 格式化時間 01/28/2024, 01:35:51 轉換成 YYYY-MM-DDTHH:MM:SS
+                const formatDateTimeLocal = (dateString) => {
+                    const [datePart, timePart] = dateString.split(', ');
+                    const [month, day, year] = datePart.split('/');
+                    const formattedDateTime = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`;
+                    return formattedDateTime;
+                };
+
+                const tableName = this.getAttribute('data-tableName');
+                const tableId = this.getAttribute('data-tableId');
+                const seatId = this.getAttribute('data-seatId');
+
+                const { value: formValues } = await Swal.fire({
+                    title: `時間設定 - ${tableName}`,
+                    html: `
+                        <input type="datetime-local" id="swal-input1" class="swal2-input" value="${formatDateTimeLocal(formatter.format(now))}">
+                        <input type="datetime-local" id="swal-input2" class="swal2-input" value="${formatDateTimeLocal(formatter.format(twoHoursLater))}">
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        return [
+                            document.querySelector('#swal-input1').value,
+                            document.querySelector('#swal-input2').value
+                        ];
+                    }
+                });
+
+                if (formValues) {
+                    try {
+                        const response = await fetch('@Url.Content("~/api/CartSettingApiController/UpdateTime")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: tableId,
+                                seatId: seatId,
+                                startTime: formValues[0],
+                                endTime: formValues[1]
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "更新成功",
+                                text: data.message,
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "更新失敗",
+                                text: data.message,
+                            });
+                        }
+                    } catch (error) {
+                        Swal.fire('送出失敗', error, 'error');
+                    }
+                }
+            });
+        });
+    </script>
+}

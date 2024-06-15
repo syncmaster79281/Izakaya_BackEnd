@@ -1,0 +1,115 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.MemberVm>
+
+@{
+    ViewBag.Title = "會員列表";
+}
+
+
+    <h2 class="col-12 text-center">會員列表</h2>
+    <p class="d-flex justify-content-end">
+        <a href="@Url.Action("Create", "Members")" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-plus"></i>
+            新增
+        </a>
+    </p>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Account)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Points)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AuthenticatioCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Birthday)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Account)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Points)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuthenticatioCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Birthday)
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", "Members", new { Id = item.Id})" class="btn btn-sm btn-outline-primary">
+                    <i class="fa-solid fa-pencil"></i>
+                    編輯
+                </a>
+                <a href="@Url.Action("Delete", "Members", new { Id = item.Id})" class="btn-delete btn btn-sm btn-outline-danger">
+                    <i class="fa-regular fa-trash-can"></i>
+                    刪除
+                </a>
+            </td>
+        </tr>
+    }
+
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            //判斷有沒有SESSION，如果沒有就跳轉到登入頁面
+            $('.btn-delete').on('click', function (e) {
+                e.preventDefault(); // 阻止默认行为，即链接跳转
+
+                const url = $(this).attr('href'); // 获取链接地址
+                const confirmMessage = $(this).data('confirm_message');
+
+                Swal.fire({
+                    title: '是否刪除',
+                    text: '這筆資料',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '取消',
+                    confirmButtonText: '刪除',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,193 @@
+﻿@model IEnumerable<Izakayamvc.ViewModels.Vms.ReservationVM>
+
+@{
+    ViewBag.Title = "CalendarBranch02";
+}
+
+
+<h2 style="text-align: center" class="mb-3 mt-3">員工確認訂位表</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container" style="height: 100vh">
+        <h3 class="text-center fw-bolder">居酒屋2號店 本月訂位表</h3>
+        <p>本月值星：老郭</p>
+        <div class="row">
+            <div class="col text-center mb-3">
+                <form action="" id="formSearch">
+                    <input type="text" class="text-end" name="year" id="year" value="2023"> / <input type="text" class="text-end" name="month" id="month" value="1">
+                    <input type="button" value="查詢" class="btn btn-sm btn-outline-primary" id="btnSearch">
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9" id="calendarConatiner" style="overflow: auto">
+            </div>
+            <div class="col-md-3">
+                公告事項:
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        // 傳回指定年月的總天數
+        function daysInMonth(month, year) {
+            // 日期為0時, 會傳回上個月最後一天
+            // 再經由 getDate() 取得上個月最後一天的日期, 就是天數
+            return new Date(year, month , 0).getDate();
+        }
+
+        // 處理每個單元格按鈕點擊的函數
+        function cellButtonClick(button) {
+            // 您可以在此實現單元格按鈕點擊的相應邏輯
+            const date = button.value;
+            var form = document.querySelector("#myForm");
+            form.action = "@Url.Content("~/CalendarReservation/TheDayBranch02")" +"?date="+ date;
+            form.submit();
+        }
+        // 生成空白月曆
+        function generateCalendar(year, month) {
+            const startDay = new Date(year, month-1, 1).getDay();
+            const totalDays = daysInMonth(month, year);
+
+            let tableHTML = `<table id="eventTable" class="table table-bordered table-responsive">
+                            <thead class="table-success text-center">
+                                <tr>
+                                    <td>日
+                                    <td>一
+                                    <td>二
+                                    <td>三
+                                    <td>四
+                                    <td>五
+                                    <td>六
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            let dayCounter = 1;
+
+            for (let i = 0; i < 6; i++) {
+                 let rowHTML = '<tr>';
+                 let emptyCells = 0;
+                 for (let j = 0; j < 7; j++) {
+                     if ((i === 0 && j < startDay) || dayCounter > totalDays) {
+                         rowHTML += '<td class="not-current-month"></td>'; // 非本月的日期，加上灰色背景
+                         emptyCells++;
+                     }
+                     else {
+                         // 單元格內容
+                         let cellContent = '';
+
+                         if (j === 1) { // 判斷是否為禮拜一
+                             cellContent = '公休'; // 將禮拜一的按鈕文字設為 "公休"
+                         }
+                         else {
+                             cellContent = `<a href="@Url.Content("~/CalendarReservations/TheDayBranch02")?date=${year}/${month}/${dayCounter}" class="btn btn-sm btn-primary">訂單明細</a>`;
+                         }
+
+                         rowHTML += `<td data-date="${year}/${month}/${dayCounter}">
+                                         <div class="tdDay">${dayCounter}</div>
+                                          ${cellContent}
+                                     </td>`; // 本月的日期，加上ID和按鈕
+                         dayCounter++;
+                     }
+                 }
+                 rowHTML += '</tr>';
+                 if (emptyCells !== 7) {
+                     tableHTML += rowHTML;
+                 }
+                 else {
+                     break;
+                 }
+                 if (dayCounter > totalDays) {
+                     break;
+                 }
+            }
+            tableHTML += '</tbody></table>';
+            return tableHTML;
+        };
+        let calendarContainer = document.getElementById('calendarConatiner');
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let ctrlYear = document.getElementById('year');
+            let ctrlMonth = document.getElementById('month');
+            const now = new Date();
+
+            ctrlYear.value = now.getFullYear();
+            ctrlMonth.value = now.getMonth() + 1;
+
+            document.getElementById("btnSearch").addEventListener("click", function () {
+                const year = parseInt(ctrlYear.value);
+                const month = parseInt(ctrlMonth.value);
+
+                calendarContainer.innerHTML = generateCalendar(year, month);
+                fillEvents();
+            });
+        })
+    </script>
+}
+
+@section CSS{
+    <style>
+        #formSearch input[type="text"] {
+            width: 50px;
+        }
+
+        .not-current-month {
+            background-color: darkgrey;
+        }
+
+        #eventTable {
+            /*height: 100%;*/
+            min-width: 800px;
+        }
+
+            #eventTable tbody td {
+                position: relative;
+                height: 110px;
+                /*max-height:120px;*/
+
+                width: 14.28%; /* 每欄等寬 */
+                max-width: 14.28%;
+                overflow: hidden;
+                white-space: nowrap; /* 文字過多時, 不要折行, 但會撐寬表格*/
+                text-overflow: ellipsis;
+                word-wrap: break-word; /* 舊版本的瀏覽器 */
+                overflow-wrap: break-word; /* 新版本的瀏覽器 */
+
+                padding: 25px 5px 5px 5px; /* 避免與日期重疊 */
+            }
+
+            #eventTable .tdDay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 10;
+                background-color: lightblue;
+                /*opacity: 0.5;*/
+
+                font-size: 0.7em;
+                font-weight: bold;
+                font-style: italic;
+                padding: 5px;
+            }
+
+        .s {
+            overflow: hidden;
+            width: 95%;
+            font-size: 0.6em;
+        }
+
+        .event-count {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+}

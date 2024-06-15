@@ -1,0 +1,106 @@
+﻿@model Izakayamvc.ViewModels.Vms.LoginVm
+
+@{
+    ViewBag.Title = "Login";
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img class="img-fluid background-img" src="~/img/login-1.jpg" alt="" />
+                <div class="container">
+                    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6 col-md-8 d-flex flex-column align-items-center justify-content-center">
+                                    <div class="d-flex justify-content-center py-4">
+                                        <a href="@Url.Content("~/Home/Login")" class="logo d-flex align-items-center w-auto">
+                                            <span class="d-none d-lg-block">居酒屋後台</span>
+                                        </a>
+                                    </div>
+                                    <div class="card mb-3 w-auto">
+                                        <div class="card-body">
+                                            <div class="pt-4 pb-2">
+                                                <h5 class="card-title text-center pb-0 fs-4">Login</h5>
+                                            </div>
+                                            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", novalidate = "novalidate" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label" })
+                                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-lg" } })
+                                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.EmployeePassword, htmlAttributes: new { @class = "form-label" })
+                                                    @Html.EditorFor(model => model.EmployeePassword, new { htmlAttributes = new { @class = "form-control form-control-lg" } })
+                                                    @Html.ValidationMessageFor(model => model.EmployeePassword, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary btn-lg w-100" type="submit">登入</button>
+                                                    <button class="btn btn-success btn-lg w-100 mt-3" onclick="testBtn()">測試用按鈕</button>
+                                                </div>
+                                                <div class="col-12">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section css{
+    <style>
+        .background-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* z-index: -1;*/
+        }
+    </style>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        const nameInput = document.querySelector('input[name="Name"]');
+        const passwordInput = document.querySelector('input[name="EmployeePassword"]');
+
+        
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                console.log('頁面從瀏覽器緩存中恢復（可能是由於上一頁）');
+                var cookie = document.cookie;
+                if (document.cookie !== null) {
+                    document.cookie = "Izakayz=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var myModal = new bootstrap.Modal(document.querySelector('#staticBackdrop'), {
+                keyboard: false,
+                backdrop: 'static'
+            });
+            myModal.show();
+        });
+
+        const testBtn = () => {
+            event.preventDefault();
+            nameInput.value = "吳大偉";
+            passwordInput.value = "87984987";
+        }
+    </script>
+}

@@ -1,0 +1,81 @@
+﻿@model IEnumerable< Izakayamvc.ViewModels.Vms.ReservationVM>
+
+@{
+    ViewBag.Title = "TodayReservation";
+}
+
+<h2>當日訂位表</h2>
+<p>
+    <a href="@Url.Action("CreateReservation", "CalendarReservations")" class="btn btn-sm btn-outline-success">
+        <i class="fa-solid fa-plus"></i>
+        新增訂位
+    </a>
+</p>
+
+
+<div class="calendar">
+    @foreach (var item in Model)
+    {
+        <div class="day">
+            <div class="date">@item.ReservationTime.Month 月 @item.ReservationTime.Day 號</div>
+            <div class="events">
+                <div class="event">
+                    <span>@Html.DisplayNameFor(model => model.Name): @item.Name</span>
+                    <span>@Html.DisplayNameFor(model => model.Qty): @item.Qty 位</span>
+                    <span>@Html.DisplayNameFor(model => model.ReservationTime): @item.ReservationTime.ToShortTimeString()</span>
+                    <span>@Html.DisplayNameFor(model => model.Status): @item.Status</span>
+                    <span>@Html.DisplayNameFor(model => model.BranchId): @item.BranchId</span>
+                    <span>@Html.DisplayNameFor(model => model.SeatId): @item.SeatId</span>
+                </div>
+                <!-- Add more event details if needed -->
+            </div>
+            <div>
+                <a href="@Url.Action("EditReservation", "CalendarReservations",  new { Id = item.Id, returnUrl = @Url.Content("~/CalendarReservations/TodayReservation") })" class="btn btn-sm btn-outline-primary">
+                    <i class="fa-solid fa-pencil"></i>
+                    編輯
+                </a>
+                <a href="@Url.Action("DeleteTodayReservation", "CalendarReservations",  new { reservationId = item.Id })" class="btn btn-sm btn-outline-danger">
+                    <i class="fa-solid fa-delete-left"></i>
+                    刪除
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section CSS{
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        .day {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+        .date {
+            font-weight: bold;
+        }
+        .events {
+            margin-top: 10px;
+        }
+        .event {
+            margin: 5px 0;
+        }
+        .event span {
+            display: block;
+        }
+        .delete-link {
+            color: red; /* 設置文本顏色為紅色 */
+            font-weight: bold; /* 設置粗體 */
+            text-decoration: none; /* 移除下劃線 */
+        }
+        .delete-link:hover {
+            text-decoration: underline; /* 滑鼠懸停時添加下劃線效果 */
+        }
+    </style>
+}
