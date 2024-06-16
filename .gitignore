@@ -44,8 +44,7 @@ $RECYCLE.BIN/
 _IISExpress/
 
 # Web.Config
-*.config
-*.config.*
+
 
 # IIS Express
 /.vs/
