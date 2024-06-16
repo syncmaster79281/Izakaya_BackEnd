@@ -29,5 +29,7 @@
 ![image](https://github.com/syncmaster79281/Izakaya_BackEnd/assets/19486441/8919808d-3f4b-45a3-8a71-55d1ff231493)
 
 
+## 套件重新安裝指令
+```Update-Package -Reinstall```
 
 
