@@ -25,8 +25,6 @@
 9. entity 資料庫實體 dto 資料流實體 使用擴充方法互相轉換
 10. 使用Partial View 來開發共用按鈕樣式
 
-## 資料庫設計
-![image](https://github.com/syncmaster79281/Izakaya_BackEnd/assets/19486441/8919808d-3f4b-45a3-8a71-55d1ff231493)
 
 ## Demo
 [觀看期中專題影片](https://youtu.be/ZovxuzcPdZI?list=PLUr-wF1c0cXyIcTLAKwC6xAFHYIPg0lpx&t=1099)
